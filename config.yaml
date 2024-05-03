@@ -1,0 +1,29 @@
+rules:
+  - path: /v1/foo/:bar
+    method: GET
+    responses:
+      - condition:
+          of: PathParamMatcher
+          with:
+            name: bar
+            matches:
+              - foo
+              - baz
+        status: 200
+        contentType: application/json
+        body: Hello, World
+      - status: 500
+  - path: /v1/baz
+    method: POST
+    responses:
+      - condition:
+          of: PathParamMatcher
+          with:
+            name: bar
+            matches:
+              - foo
+              - baz
+        status: 200
+        contentType: application/json
+        body: Hello, World
+      - status: 500
