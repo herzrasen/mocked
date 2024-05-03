@@ -1,10 +1,6 @@
-use std::fmt::Display;
 use std::fs;
-use std::future::Future;
 
-use axum::extract::Request;
 use clap::Parser;
-use serde::Serialize;
 
 use crate::cli::Cli;
 use crate::rules::Rules;
@@ -12,11 +8,9 @@ use crate::rules::Rules;
 mod cli;
 mod rule;
 mod rules;
-
-async fn respond(request: Request) -> String {
-    println!("{:?}", request);
-    format!("{:?}", request).to_string()
-}
+mod method;
+mod response;
+mod condition;
 
 #[tokio::main]
 async fn main() {

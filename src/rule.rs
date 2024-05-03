@@ -1,11 +1,14 @@
 use std::sync::Arc;
 
+use axum::{Extension, Router};
 use axum::extract::Request;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
-use axum::routing::{delete, get, head, patch, post, put, MethodRouter};
-use axum::{Extension, Router};
+use axum::routing::{delete, get, head, MethodRouter, patch, post, put};
 use serde::{Deserialize, Serialize};
+
+use crate::method::Method;
+use crate::response::Response;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Rule {
@@ -39,43 +42,12 @@ impl Rule {
     }
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub enum Method {
-    GET,
-    POST,
-    PUT,
-    PATCH,
-    DELETE,
-    HEAD,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(rename_all = "camelCase")]
-pub struct Response {
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub condition: Option<Condition>,
-    pub status: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub content_type: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub body: Option<String>,
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-#[serde(tag = "of", content = "with")]
-pub enum Condition {
-    PathParamMatcher(PathParamMatch),
-}
-
-#[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct PathParamMatch {
-    pub name: String,
-    pub matches: Vec<String>,
-}
-
 #[cfg(test)]
 mod tests {
-    use crate::rule::{Condition, Method, PathParamMatch, Response, Rule};
+    use crate::condition::{Condition, PathParamMatch};
+    use crate::method::Method;
+    use crate::response::Response;
+    use crate::rule::Rule;
     use crate::rules::Rules;
 
     #[test]
