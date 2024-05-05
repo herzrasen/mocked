@@ -1,29 +1,21 @@
 rules:
-  - path: /v1/foo/:bar
+  - path: /v1/foo/:bar/:version
     method: GET
     responses:
-      - condition:
-          of: PathParamMatcher
-          with:
-            name: bar
-            matches:
-              - foo
-              - baz
+      - op: or
+        matchers:
+          - of: PathParamMatcher
+            with:
+              name: bar
+              matches:
+                - foo
+                - baz
+          - of: PathParamMatcher
+            with:
+              name: version
+              matches:
+                - 2
         status: 200
-        contentType: application/json
+        headers:
+          Content-Type: application/json
         body: Hello, World
-      - status: 500
-  - path: /v1/baz
-    method: POST
-    responses:
-      - condition:
-          of: PathParamMatcher
-          with:
-            name: bar
-            matches:
-              - foo
-              - baz
-        status: 200
-        contentType: application/json
-        body: Hello, World
-      - status: 500

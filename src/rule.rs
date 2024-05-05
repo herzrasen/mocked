@@ -1,8 +1,10 @@
+use std::collections::HashMap;
 use std::sync::Arc;
 
 use axum::{Extension, Router};
-use axum::extract::Request;
-use axum::http::StatusCode;
+use axum::extract::{Query, RawPathParams};
+use axum::handler::HandlerWithoutStateExt;
+use axum::http::{HeaderMap, StatusCode};
 use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, MethodRouter, patch, post, put};
 use serde::{Deserialize, Serialize};
@@ -15,6 +17,14 @@ pub struct Rule {
     pub path: String,
     pub method: Method,
     pub responses: Vec<Response>,
+}
+
+#[derive(Clone, Debug)]
+pub struct Request {
+    pub headers: HeaderMap,
+    pub path_params: HashMap<String, String>,
+    pub query: HashMap<String, String>,
+    pub body: String,
 }
 
 impl Rule {
@@ -35,17 +45,47 @@ impl Rule {
         }
     }
 
-    async fn handler(Extension(rule): Extension<Arc<Rule>>, request: Request) -> impl IntoResponse {
-        println!("{:?}", request);
-        println!("{:?}", rule);
-        StatusCode::OK
+    async fn handler(
+        Extension(rule): Extension<Arc<Rule>>,
+        headers: HeaderMap,
+        path_params: RawPathParams,
+        Query(query): Query<HashMap<String, String>>,
+        body: String,
+    ) -> impl IntoResponse {
+        let path_params = path_params
+            .iter()
+            .fold(HashMap::new(), |mut acc, (key, value)| {
+                acc.insert(key.to_string(), value.to_string());
+                acc
+            });
+        let request = Request {
+            headers,
+            path_params,
+            query,
+            body,
+        };
+        if let Some(resp) = rule.clone().select_response(&request) {
+            log::info!("Selected response {:?}", resp);
+            resp.response()
+        } else {
+            log::warn!("Unable to select response");
+            (StatusCode::NOT_FOUND, "Unable to select response for input").into_response()
+        }
+    }
+
+    fn select_response(self: Arc<Rule>, req: &Request) -> Option<Response> {
+        self.responses.iter().cloned().find(|r| r.matches(&req))
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::condition::{Condition, PathParamMatch};
+    use std::collections::HashMap;
+
+    use crate::matcher::{Matcher, PathParamMatch};
+    use crate::matchers::Matchers;
     use crate::method::Method;
+    use crate::r#match::Match;
     use crate::response::Response;
     use crate::rule::Rule;
     use crate::rules::Rules;
@@ -58,26 +98,27 @@ mod tests {
                 method: Method::GET,
                 responses: vec![
                     Response {
-                        condition: Some(Condition::PathParamMatcher(PathParamMatch {
+                        matchers: Matchers::Or(vec![Matcher::PathParamMatcher(PathParamMatch {
                             name: "bar".to_string(),
-                            matches: vec!["foo".to_string(), "baz".to_string()],
-                        })),
+                            matches: vec![
+                                Match::String("foo".to_string()),
+                                Match::String("baz".to_string()),
+                            ],
+                        })]),
                         status: 200,
                         body: Some("Hello, World".to_string()),
-                        content_type: Some("application/json".to_string()),
+                        headers: HashMap::new(),
                     },
                     Response {
-                        condition: None,
+                        matchers: Matchers::empty(),
                         status: 500,
                         body: None,
-                        content_type: None,
+                        headers: HashMap::new(),
                     },
                 ],
             }],
         };
         let yaml = serde_yaml::to_string(&rules).unwrap();
         println!("{yaml}");
-        // let json = serde_json::to_string_pretty(&rules).unwrap();
-        // println!("{json}");
     }
 }
