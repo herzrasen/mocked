@@ -1,26 +1,32 @@
 use std::fs;
+use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::cli::Cli;
-use crate::rules::Rules;
+use crate::routing::Routing;
 
-mod cli;
-mod matcher;
-mod method;
+mod request;
 mod response;
-mod rule;
-mod rules;
-mod matchers;
-mod r#match;
+mod routing;
+
+#[derive(Parser, Debug)]
+#[command(name = "mockd", about = "Serve mock data")]
+pub struct Cli {
+    #[arg(long)]
+    pub port: u16,
+    #[arg(long)]
+    pub host: String,
+    #[arg(help = "The config file describing the routes")]
+    pub config: PathBuf,
+}
 
 #[tokio::main]
 async fn main() {
     env_logger::init();
     let args = Cli::parse();
     let config = fs::read_to_string(args.config).expect("Unable to read config");
-    let rules: Rules = serde_yaml::from_str(&config).unwrap();
-    let router = rules.router();
+    let routing: Routing = serde_yaml::from_str(&config).unwrap();
+    let router = routing.router();
     let listener = tokio::net::TcpListener::bind(format!("{}:{}", args.host, args.port))
         .await
         .unwrap();

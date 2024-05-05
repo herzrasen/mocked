@@ -1,4 +1,15 @@
 rules:
+  - path: /v1/login
+    method: POST
+    responses:
+      - op: or
+        matchers:
+          - of: HeaderValueContainsMatcher
+            with:
+              name: Authorization
+              matches:
+                - Basic
+        status: 200
   - path: /v1/foo/:bar/:version
     method: GET
     responses:

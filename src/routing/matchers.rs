@@ -1,7 +1,7 @@
 use serde::{Deserialize, Serialize};
 
-use crate::matcher::Matcher;
-use crate::rule::Request;
+use crate::request::Request;
+use crate::routing::matcher::Matcher;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(tag = "op", content = "matchers", rename_all = "camelCase")]
@@ -11,10 +11,6 @@ pub enum Matchers {
 }
 
 impl Matchers {
-    pub fn empty() -> Matchers {
-        Matchers::Or(Vec::new())
-    }
-
     pub fn matches(&self, req: &Request) -> bool {
         match self {
             Matchers::And(matchers) => matchers.iter().all(|matcher| matcher.matches(req)),
@@ -25,9 +21,9 @@ impl Matchers {
 
 #[cfg(test)]
 mod tests {
-    use crate::matcher::{Matcher, PathParamMatch};
-    use crate::matchers::Matchers;
-    use crate::r#match::Match;
+    use crate::routing::matcher::{Matcher, PathParamMatch};
+    use crate::routing::matchers::Matchers;
+    use crate::routing::r#match::Match;
 
     #[test]
     fn test_serialize() {

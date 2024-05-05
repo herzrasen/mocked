@@ -4,8 +4,8 @@ use axum::http::{HeaderName, StatusCode};
 use axum::response::IntoResponse;
 use serde::{Deserialize, Serialize};
 
-use crate::matchers::Matchers;
-use crate::rule::Request;
+use crate::request::Request;
+use crate::routing::matchers::Matchers;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(rename_all = "camelCase")]

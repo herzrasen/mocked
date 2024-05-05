@@ -18,11 +18,17 @@ impl From<String> for Match {
 
 #[cfg(test)]
 mod tests {
-    use crate::r#match::Match;
+    use crate::routing::r#match::Match;
 
     #[test]
     fn test_from_string_with_numeric() {
         let m: Match = String::from("10").into();
         assert_eq!(m, Match::Numeric(10.));
+    }
+
+    #[test]
+    fn test_from_string_with_string() {
+        let m: Match = String::from("hello").into();
+        assert_eq!(m, Match::String(String::from("hello")));
     }
 }

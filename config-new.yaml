@@ -1,0 +1,41 @@
+routing:
+  - rule:
+      path: /v1/login
+      methods:
+        - POST
+        - PUT
+      conditions:
+        - and:
+            - type: HeaderContains
+              with:
+                name: Authorization
+                values:
+                  - Basic
+  - rule:
+      path: /v1/search/:type
+      method:
+        - POST
+      conditions:
+        - or:
+            - type: PathParam
+              with:
+                name: bar
+                values:
+                  - foo
+                  - bar
+            - type: PathParam
+              with:
+                name: version
+                values:
+                  - 1
+                  - 2
+          response:
+            status: 200
+            headers:
+              Content-Type: application/json
+            body:
+              string: |
+                Hello, World
+                This is a body
+                and it uses multiple
+                lines
