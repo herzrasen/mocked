@@ -11,6 +11,7 @@ pub mod matchers;
 mod method;
 pub mod rule;
 mod matcher;
+mod response;
 
 trait Matching {
     fn matches(&self, req: &Request) -> bool;

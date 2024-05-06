@@ -7,10 +7,10 @@ use axum::http::{HeaderMap, StatusCode};
 use axum::response::IntoResponse;
 use axum::routing::{delete, get, head, MethodRouter, patch, post, put};
 use serde::{Deserialize, Serialize};
-use crate::request::Request;
 
-use crate::response::Response;
+use crate::request::Request;
 use crate::routing::method::Method;
+use crate::routing::response::Response;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Rule {

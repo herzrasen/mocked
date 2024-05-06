@@ -6,7 +6,6 @@ use clap::Parser;
 use crate::routing::Routing;
 
 mod request;
-mod response;
 mod routing;
 
 #[derive(Parser, Debug)]
