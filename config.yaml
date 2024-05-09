@@ -1,0 +1,35 @@
+routes:
+  - path: /v1/login
+    methods:
+      - POST
+    conditions:
+      - op: or
+        matchers:
+          - of: HeaderValueContainsMatcher
+            with:
+              name: Authorization
+              matches:
+                - Basic
+        status: 200
+  - path: /v1/foo/:bar/:version
+    methods:
+      - GET
+      - POST
+    conditions:
+      - op: or
+        matchers:
+          - of: PathParamMatcher
+            with:
+              name: bar
+              matches:
+                - foo
+                - baz
+          - of: PathParamMatcher
+            with:
+              name: version
+              matches:
+                - 2
+        status: 200
+        headers:
+          Content-Type: application/json
+        body: Hello, World
