@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::routing::Routing;
+use crate::routing::Config;
 
 mod request;
 mod routing;
@@ -24,8 +24,10 @@ async fn main() {
     env_logger::init();
     let args = Cli::parse();
     let config = fs::read_to_string(args.config).expect("Unable to read config");
-    let routing: Routing = serde_yaml::from_str(&config).unwrap();
-    let router = routing.router();
+    let config: Config = serde_yaml::from_str(&config).unwrap();
+    let config_str = serde_yaml::to_string(&config).unwrap();
+    println!("{config_str}");
+    let router = config.router();
     let listener = tokio::net::TcpListener::bind(format!("{}:{}", args.host, args.port))
         .await
         .unwrap();

@@ -1,7 +1,8 @@
-rules:
+routes:
   - path: /v1/login
-    method: POST
-    responses:
+    methods:
+      - POST
+    conditions:
       - op: or
         matchers:
           - of: HeaderValueContainsMatcher
@@ -11,8 +12,10 @@ rules:
                 - Basic
         status: 200
   - path: /v1/foo/:bar/:version
-    method: GET
-    responses:
+    methods:
+      - GET
+      - POST
+    conditions:
       - op: or
         matchers:
           - of: PathParamMatcher
