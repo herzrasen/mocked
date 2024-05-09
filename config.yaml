@@ -2,34 +2,42 @@ routes:
   - path: /v1/login
     methods:
       - POST
+      - PUT
     conditions:
-      - op: or
-        matchers:
-          - of: HeaderValueContainsMatcher
-            with:
-              name: Authorization
-              matches:
-                - Basic
-        status: 200
-  - path: /v1/foo/:bar/:version
+      - type: HeaderContains
+        with:
+          name: Authorization
+          values:
+            - Basic
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+          body:
+            file: resp.json
+  - path: /v1/search/:type/:version
     methods:
-      - GET
       - POST
     conditions:
-      - op: or
-        matchers:
-          - of: PathParamMatcher
+      - or:
+          - type: PathParam
             with:
-              name: bar
-              matches:
+              name: type
+              values:
                 - foo
-                - baz
-          - of: PathParamMatcher
+                - bar
+          - type: PathParam
             with:
               name: version
-              matches:
+              values:
+                - 1
                 - 2
-        status: 200
-        headers:
-          Content-Type: application/json
-        body: Hello, World
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+          body: >
+            Hello, World
+            This is a body
+            and it uses multiple
+            lines
