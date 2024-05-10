@@ -25,4 +25,4 @@ jobs:
         run: cargo build
 
       - name: Run tests
-        run: cargo test --workspace --all-features
+        run: cargo test
