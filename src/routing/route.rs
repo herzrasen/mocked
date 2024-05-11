@@ -32,12 +32,12 @@ impl Route {
             .fold(MethodRouter::new(), |acc, method| {
                 log::info!("Chaining {:?} for {}", method, self.path);
                 match method {
-                    Method::GET => acc.get(Self::handler),
-                    Method::POST => acc.post(Self::handler),
-                    Method::PUT => acc.put(Self::handler),
-                    Method::PATCH => acc.patch(Self::handler),
-                    Method::DELETE => acc.delete(Self::handler),
-                    Method::HEAD => acc.head(Self::handler),
+                    Method::Get => acc.get(Self::handler),
+                    Method::Post => acc.post(Self::handler),
+                    Method::Put => acc.put(Self::handler),
+                    Method::Patch => acc.patch(Self::handler),
+                    Method::Delete => acc.delete(Self::handler),
+                    Method::Head => acc.head(Self::handler),
                 }
             })
     }

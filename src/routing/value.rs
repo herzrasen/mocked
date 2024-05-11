@@ -2,33 +2,33 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq)]
 #[serde(untagged)]
-pub enum Match {
+pub enum Value {
     String(String),
     Numeric(f64),
 }
 
-impl From<String> for Match {
+impl From<String> for Value {
     fn from(value: String) -> Self {
         match value.parse::<f64>() {
-            Ok(v) => Match::Numeric(v),
-            Err(_) => Match::String(value),
+            Ok(v) => Self::Numeric(v),
+            Err(_) => Self::String(value),
         }
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::routing::r#match::Match;
+    use crate::routing::value::Value;
 
     #[test]
     fn test_from_string_with_numeric() {
-        let m: Match = String::from("10").into();
-        assert_eq!(m, Match::Numeric(10.));
+        let v: Value = String::from("10").into();
+        assert_eq!(v, Value::Numeric(10.));
     }
 
     #[test]
     fn test_from_string_with_string() {
-        let m: Match = String::from("hello").into();
-        assert_eq!(m, Match::String(String::from("hello")));
+        let v: Value = String::from("hello").into();
+        assert_eq!(v, Value::String(String::from("hello")));
     }
 }

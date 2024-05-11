@@ -1,7 +1,5 @@
-use std::error::Error;
 use std::{fs, io};
 use std::path::PathBuf;
-use std::str::FromStr;
 
 use serde::{Deserialize, Serialize};
 
@@ -9,7 +7,7 @@ use serde::{Deserialize, Serialize};
 #[serde(untagged)]
 pub enum Body {
     String(String),
-    File(File),
+    Include(Include),
 }
 
 impl Body {
@@ -24,14 +22,32 @@ impl TryInto<String> for Body {
     fn try_into(self) -> Result<String, Self::Error> {
         match self {
             Body::String(value) => Ok(value),
-            Body::File(file) => {
-                fs::read_to_string(file.file)
-            }
+            Body::Include(include) => fs::read_to_string(include.include),
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
-pub struct File {
-    pub file: PathBuf,
+pub struct Include {
+    pub include: PathBuf,
+}
+
+#[cfg(test)]
+mod tests {
+    use std::io;
+    use std::io::Write;
+
+    use crate::routing::body::{Body, Include};
+
+    #[test]
+    fn test_include_is_read_correctly() {
+        let tmp_file = tempfile::NamedTempFile::new().unwrap();
+        tmp_file.as_file().write("test-data".as_bytes()).unwrap();
+        let body = Body::Include(Include {
+            include: tmp_file.path().to_path_buf(),
+        });
+        let res: Result<String, io::Error> = body.try_into();
+        assert!(res.is_ok());
+        assert_eq!(res.unwrap(), "test-data");
+    }
 }

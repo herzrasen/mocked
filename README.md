@@ -141,8 +141,8 @@ true.
 A string body contains a yaml formatted string. It may start with `|` to preserve line breaks or `>` to convert a yaml
 multiline string to a single line response string.
 
-#### File Body
+#### Include Body
 
-| Field | Type   | Description                                                                                                         | Required |
-|-------|--------|---------------------------------------------------------------------------------------------------------------------|----------|
-| file  | string | A path to a file to include into the response. If it doesn't exist, the server return san InternalServerError (500) | yes      |
+| Field   | Type   | Description                                                                                                         | Required |
+|---------|--------|---------------------------------------------------------------------------------------------------------------------|----------|
+| include | string | A path to a file to include into the response. If it doesn't exist, the server return san InternalServerError (500) | yes      |

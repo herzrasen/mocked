@@ -1,11 +1,12 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
+#[serde(rename_all = "UPPERCASE")]
 pub enum Method {
-    GET,
-    POST,
-    PUT,
-    PATCH,
-    DELETE,
-    HEAD,
+    Get,
+    Post,
+    Put,
+    Patch,
+    Delete,
+    Head,
 }

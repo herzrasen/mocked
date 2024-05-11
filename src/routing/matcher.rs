@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::request::Request;
 use crate::routing::Matching;
-use crate::routing::r#match::Match;
+use crate::routing::value::Value;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(tag = "type", content = "with")]
@@ -23,14 +23,14 @@ impl Matcher {
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct PathParamMatcher {
     pub name: String,
-    pub values: Vec<Match>,
+    pub values: Vec<Value>,
 }
 
 impl Matching for PathParamMatcher {
     fn matches(&self, req: &Request) -> bool {
         if let Some(value) = req.path_params.get(&self.name) {
-            let m: Match = value.clone().into();
-            let matches = self.values.contains(&m);
+            let v: Value = value.clone().into();
+            let matches = self.values.contains(&v);
             if matches {
                 log::info!("PathParamMatcher matches {value} for {}", self.name);
             }
@@ -72,13 +72,13 @@ mod tests {
     use crate::request::Request;
     use crate::routing::matcher::Matcher::PathParam;
     use crate::routing::matcher::PathParamMatcher;
-    use crate::routing::r#match::Match;
+    use crate::routing::value::Value;
 
     #[test]
     fn test_path_param_matches() {
         let ppm = PathParam(PathParamMatcher {
             name: "param1".to_string(),
-            values: vec![Match::String("valueX".to_string())],
+            values: vec![Value::String("valueX".to_string())],
         });
         let mut path_params = HashMap::new();
         path_params.insert("param1".to_string(), "valueX".to_string());
