@@ -3,7 +3,7 @@ use std::path::PathBuf;
 
 use clap::Parser;
 
-use crate::routing::Config;
+use crate::routing::config::Config;
 
 mod request;
 mod routing;

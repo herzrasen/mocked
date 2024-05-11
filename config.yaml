@@ -14,7 +14,7 @@ routes:
           headers:
             Content-Type: application/json
           body:
-            file: resp.json
+            include: resp.json
   - path: /v1/search/:type/:version
     methods:
       - POST
