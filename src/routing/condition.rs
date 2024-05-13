@@ -76,4 +76,53 @@ mod tests {
         let matches = condition.matches(&req);
         assert!(matches)
     }
+
+    #[test]
+    fn test_matcher_is_evaluated() {
+        let condition = Condition {
+            matcher: None,
+            matchers: Some(Matchers::Or(vec![Matcher::PathParam(PathParamMatcher {
+                name: String::from("foo"),
+                values: vec![Value::Numeric(234.)],
+            })])),
+            response: Response {
+                status: 200,
+                headers: HashMap::new(),
+                body: Some(Body::empty()),
+            },
+        };
+        let mut path_params = HashMap::new();
+        path_params.insert(String::from("foo"), String::from("234"));
+        let req = Request {
+            path_params: path_params.clone(),
+            headers: HeaderMap::new(),
+            query: HashMap::new(),
+            body: String::new(),
+        };
+        let matches = condition.matches(&req);
+        assert!(matches);
+    }
+
+    #[test]
+    fn test_evaluates_to_true_if_no_matcher_is_defined() {
+        let condition = Condition {
+            matcher: None,
+            matchers: None,
+            response: Response {
+                status: 200,
+                headers: HashMap::new(),
+                body: Some(Body::empty()),
+            },
+        };
+        let mut path_params = HashMap::new();
+        path_params.insert(String::from("foo"), String::from("234"));
+        let req = Request {
+            path_params: path_params.clone(),
+            headers: HeaderMap::new(),
+            query: HashMap::new(),
+            body: String::new(),
+        };
+        let matches = condition.matches(&req);
+        assert!(matches);
+    }
 }

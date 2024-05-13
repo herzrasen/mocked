@@ -40,6 +40,14 @@ mod tests {
     use crate::routing::body::{Body, Include};
 
     #[test]
+    fn test_empty_body_is_formatted_correctly() {
+        let b = Body::empty();
+        let res: Result<String, io::Error> = b.try_into();
+        assert!(res.is_ok());
+        assert_eq!(res.unwrap(), "")
+    }
+
+    #[test]
     fn test_include_is_read_correctly() {
         let tmp_file = tempfile::NamedTempFile::new().unwrap();
         tmp_file.as_file().write("test-data".as_bytes()).unwrap();
