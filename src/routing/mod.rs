@@ -9,6 +9,7 @@ mod method;
 mod response;
 mod route;
 mod value;
+pub mod options;
 
 trait Matching {
     fn matches(&self, req: &Request) -> bool;
