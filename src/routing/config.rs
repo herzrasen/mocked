@@ -3,10 +3,12 @@ use std::sync::Arc;
 use axum::Router;
 use serde::{Deserialize, Serialize};
 
+use crate::routing::options::Options;
 use crate::routing::route::Route;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
+    pub options: Option<Options>,
     pub routes: Vec<Route>,
 }
 
@@ -26,7 +28,6 @@ impl Config {
 
 #[cfg(test)]
 mod tests {
-    use axum::http::StatusCode;
     use axum_test::http::{HeaderName, HeaderValue};
     use axum_test::TestServer;
 
