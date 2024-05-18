@@ -30,7 +30,7 @@ pub struct Cli {
     pub config: PathBuf,
 }
 
-async fn sleep_before_response(
+async fn delay_response(
     Extension(options): Extension<Options>,
     req: Request,
     next: Next,
@@ -62,7 +62,7 @@ async fn main() {
         .router()
         .layer(middleware::from_fn_with_state(
             options.clone(),
-            sleep_before_response,
+            delay_response,
         ))
         .layer(Extension(options));
 
