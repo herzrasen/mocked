@@ -1,6 +1,6 @@
 {
   "name": "fauxd",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "bin": "lib/index.js",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,6 +17,9 @@
     "typescript": "^5.4.5"
   },
   "optionalDependencies": {
-    "fauxd-linux-x64": "0.0.9"
+    "fauxd-linux-x64": "0.0.10",
+    "fauxd-linux-arm64": "0.0.10",
+    "fauxd-darwin-x64": "0.0.10",
+    "fauxd-darwin-arm64": "0.0.10"
   }
 }
