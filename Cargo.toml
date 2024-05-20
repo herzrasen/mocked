@@ -1,6 +1,6 @@
 [package]
-name = "mockd"
-version = "0.1.0"
+name = "fauxd"
+version = "0.0.9"
 edition = "2021"
 
 [dependencies]

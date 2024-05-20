@@ -1,25 +1,25 @@
-# mockd
+# fauxd
 
 Your friendly HTTP mock response server.
 
 ## Why?
 
-`mockd` supports you when developing software. Here are a few reasons:
+`fauxd` supports you when developing software. Here are a few reasons:
 
-* `mockd` allows you to include responses from external files, that might change during the development process. You
-  don't need to update your `mockd` config in this cases.
+* `fauxd` allows you to include responses from external files, that might change during the development process. You
+  don't need to update your `fauxd` config in this cases.
 * it allows developers to isolate the system under test from external dependencies. This is particularly useful when
-  testing components that interact with external services. By using `mockd`, developers can simulate the behavior of the
+  testing components that interact with external services. By using `fauxd`, developers can simulate the behavior of the
   external service and ensure that the system under test behaves as expected.
-* when multiple teams are working on different components that need to interact with each other, `mockd` can be used to
+* when multiple teams are working on different components that need to interact with each other, `fauxd` can be used to
   simulate the services that are still under development. This allows teams to work in parallel without having to wait
   for each other.
-* with `mockd`, developers have full control over the responses from the server. This makes it possible to test how the
+* with `fauxd`, developers have full control over the responses from the server. This makes it possible to test how the
   system behaves under different responses and in scenarios that might be difficult to reproduce with a real server.
 
 ## config.yaml format
 
-`mockd` is configured using a config file in `YAML` format.
+`fauxd` is configured using a config file in `YAML` format.
 
 ### Example
 
@@ -73,7 +73,7 @@ routes:
 
 | Field  | Type            | Description                                    | Required |
 |--------|-----------------|------------------------------------------------|----------|
-| routes | [Route](#Route) | The configuration of all rules `mockd` checks. | yes      |
+| routes | [Route](#Route) | The configuration of all rules `fauxd` checks. | yes      |
 
 ### Route
 

@@ -1,6 +1,6 @@
 {
-  "name": "mockd",
-  "version": "0.0.5",
+  "name": "fauxd",
+  "version": "0.0.9",
   "bin": "lib/index.js",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,6 +17,6 @@
     "typescript": "^5.4.5"
   },
   "optionalDependencies": {
-    "mockd-linux-x64": "0.0.5"
+    "fauxd-linux-x64": "0.0.9"
   }
 }
