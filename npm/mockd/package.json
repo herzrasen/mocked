@@ -1,6 +1,6 @@
 {
   "name": "mockd",
-  "version": "0.1.0",
+  "version": "0.0.5",
   "bin": "lib/index.js",
   "scripts": {
     "typecheck": "tsc --noEmit",
@@ -17,7 +17,6 @@
     "typescript": "^5.4.5"
   },
   "optionalDependencies": {
-    "mockd-linux-x64": "0.1.0",
-    "mockd-linux-arm64": "0.1.0"
+    "mockd-linux-x64": "0.0.5"
   }
 }
