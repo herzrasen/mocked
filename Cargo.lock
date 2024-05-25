@@ -349,24 +349,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9fc0510504f03c51ada170672ac806f1f105a88aa97a5281117e1ddc3368e51a"
 
 [[package]]
-name = "fauxd"
-version = "0.1.0"
-dependencies = [
- "axum",
- "axum-test",
- "clap",
- "env_logger",
- "log",
- "rand",
- "serde",
- "serde_json",
- "serde_yaml",
- "tempfile",
- "tokio",
- "tower",
-]
-
-[[package]]
 name = "fnv"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -667,6 +649,24 @@ dependencies = [
  "libc",
  "wasi",
  "windows-sys 0.48.0",
+]
+
+[[package]]
+name = "mocked"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "axum-test",
+ "clap",
+ "env_logger",
+ "log",
+ "rand",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "tempfile",
+ "tokio",
+ "tower",
 ]
 
 [[package]]

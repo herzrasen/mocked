@@ -1,7 +1,11 @@
 [package]
-name = "fauxd"
+name = "mocked"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE"
+description = "Your friendly HTTP mock response server"
+repository = "https://github.com/herzrasen/mocked.git"
+readme = "README.md"
 
 [dependencies]
 axum = "0.7.5"
