@@ -17,7 +17,7 @@ jobs:
       - name: Publish to crates.io
         run: cargo publish --token ${CRATES_TOKEN}
         env:
-          CRATES_TOKEN: ${{ secrets.crates_token }}
+          CRATES_TOKEN: ${{ secrets.CRATES_TOKEN }}
 
   create-release:
     runs-on: ubuntu-latest
@@ -27,7 +27,7 @@ jobs:
       - name: Create release
         run: gh release create ${{ github.ref_name }}
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   linux-x86_64:
     runs-on: ubuntu-latest
@@ -49,7 +49,7 @@ jobs:
       - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/x86_64-unknown-linux-gnu/release/mocked-${{ github.ref_name }}-linux-x86_64.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   macos-aarch64:
     runs-on: macos-latest-large
@@ -73,7 +73,7 @@ jobs:
       - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/release/mocked-${{ github.ref_name }}-aarch64-apple-darwin.dmg
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
   windows-x86_64:
     runs-on: windows-latest
@@ -95,4 +95,4 @@ jobs:
       - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/release/mocked-${{ github.ref_name }}-windows-x86_64.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
