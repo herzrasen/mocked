@@ -652,7 +652,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "mockd"
+name = "mocked"
 version = "0.1.0"
 dependencies = [
  "axum",

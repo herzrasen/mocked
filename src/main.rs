@@ -1,15 +1,11 @@
 use std::fs;
-use std::future::Future;
 use std::path::PathBuf;
-use std::process::Output;
-use std::sync::Arc;
 use std::time::Duration;
 
-use axum::body::Body;
-use axum::extract::{Request, State};
+use axum::{Extension, middleware};
+use axum::extract::Request;
 use axum::middleware::Next;
-use axum::response::{IntoResponse, Response};
-use axum::{middleware, Extension};
+use axum::response::Response;
 use clap::Parser;
 use rand::Rng;
 
@@ -20,7 +16,7 @@ mod request;
 mod routing;
 
 #[derive(Parser, Debug)]
-#[command(name = "mockd", about = "Serve mock data")]
+#[command(name = "fauxd", about = "Serve mock data")]
 pub struct Cli {
     #[arg(long)]
     pub port: u16,
