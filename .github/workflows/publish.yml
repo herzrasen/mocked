@@ -7,12 +7,24 @@ on:
 name: release
 
 jobs:
+  publish-crate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - name: Publish to crates.io
+        run: cargo publish --token ${CRATES_TOKEN}
+        env:
+          CRATES_TOKEN: ${{ secrets.crates_token }}
+
   create-release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      - name: '📦 Create release'
+      - name: Create release
         run: gh release create ${{ github.ref_name }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -34,7 +46,7 @@ jobs:
           chmod +x mocked
           tar -c mocked | gzip > mocked-${{ github.ref_name }}-linux-x86_64.tar.gz
 
-      - name: '📦 Upload binary'
+      - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/x86_64-unknown-linux-gnu/release/mocked-${{ github.ref_name }}-linux-x86_64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -58,7 +70,7 @@ jobs:
           mv mocked dmg
           hdiutil create -fs HFS+ -srcfolder dmg -volname mocked mocked-${{ github.ref_name }}-aarch64-apple-darwin.dmg
 
-      - name: '📦 Upload binary'
+      - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/release/mocked-${{ github.ref_name }}-aarch64-apple-darwin.dmg
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +92,7 @@ jobs:
           tar -czvf mocked-${{ github.ref_name }}-windows-x86_64.tar.gz mocked.exe
         shell: pwsh
 
-      - name: '📦 Upload binary'
+      - name: Upload binary
         run: gh release upload ${{ github.ref_name }} target/release/mocked-${{ github.ref_name }}-windows-x86_64.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
