@@ -20,7 +20,7 @@ pub struct Response {
 impl Response {
     pub fn response(self) -> axum::response::Response {
         let status_code = StatusCode::from_u16(self.status).unwrap();
-        let result: Result<String, io::Error> = self.body.unwrap_or_else(Body::empty).try_into();
+        let result: Result<Vec<u8>, io::Error> = self.body.unwrap_or_else(Body::empty).try_into();
         match result {
             Ok(body) => {
                 let mut resp = (status_code, body).into_response();
