@@ -6,23 +6,25 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum Body {
+    Bytes(Vec<u8>),
     String(String),
     Include(Include),
 }
 
 impl Body {
     pub fn empty() -> Self {
-        Body::String(String::new())
+        Body::Bytes(Vec::new())
     }
 }
 
-impl TryInto<String> for Body {
+impl TryInto<Vec<u8>> for Body {
     type Error = io::Error;
 
-    fn try_into(self) -> Result<String, Self::Error> {
+    fn try_into(self) -> Result<Vec<u8>, Self::Error> {
         match self {
-            Body::String(value) => Ok(value),
-            Body::Include(include) => fs::read_to_string(include.include),
+            Body::Bytes(value) => Ok(value),
+            Body::String(value) => Ok(value.as_bytes().to_vec()),
+            Body::Include(include) => fs::read(include.include),
         }
     }
 }
@@ -42,9 +44,10 @@ mod tests {
     #[test]
     fn test_empty_body_is_formatted_correctly() {
         let b = Body::empty();
-        let res: Result<String, io::Error> = b.try_into();
+        let res: Result<Vec<u8>, io::Error> = b.try_into();
         assert!(res.is_ok());
-        assert_eq!(res.unwrap(), "")
+        let expected: Vec<u8> = Vec::new();
+        assert_eq!(res.unwrap(), expected)
     }
 
     #[test]
@@ -54,8 +57,8 @@ mod tests {
         let body = Body::Include(Include {
             include: tmp_file.path().to_path_buf(),
         });
-        let res: Result<String, io::Error> = body.try_into();
+        let res: Result<Vec<u8>, io::Error> = body.try_into();
         assert!(res.is_ok());
-        assert_eq!(res.unwrap(), "test-data");
+        assert_eq!(res.unwrap(), "test-data".as_bytes().to_vec());
     }
 }
