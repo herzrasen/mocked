@@ -6,13 +6,14 @@ use serde::{Deserialize, Serialize};
 #[derive(Serialize, Deserialize, Clone, Debug)]
 #[serde(untagged)]
 pub enum Body {
+    Bytes(Vec<u8>),
     String(String),
     Include(Include),
 }
 
 impl Body {
     pub fn empty() -> Self {
-        Body::String(String::new())
+        Body::Bytes(Vec::new())
     }
 }
 
@@ -21,6 +22,7 @@ impl TryInto<Vec<u8>> for Body {
 
     fn try_into(self) -> Result<Vec<u8>, Self::Error> {
         match self {
+            Body::Bytes(value) => Ok(value),
             Body::String(value) => Ok(value.as_bytes().to_vec()),
             Body::Include(include) => fs::read(include.include),
         }
@@ -44,7 +46,8 @@ mod tests {
         let b = Body::empty();
         let res: Result<Vec<u8>, io::Error> = b.try_into();
         assert!(res.is_ok());
-        assert_eq!(res.unwrap(), "".as_bytes().to_vec())
+        let expected: Vec<u8> = Vec::new();
+        assert_eq!(res.unwrap(), expected)
     }
 
     #[test]
