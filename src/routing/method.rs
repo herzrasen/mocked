@@ -9,4 +9,5 @@ pub enum Method {
     Patch,
     Delete,
     Head,
+    Options,
 }

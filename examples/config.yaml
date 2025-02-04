@@ -1,4 +1,6 @@
 options:
+  host: localhost
+  port: 15001
   min_response_delay_ms: 100
   max_response_delay_ms: 3000
 routes:
@@ -43,4 +45,20 @@ routes:
             Hello, World
             This is a body
             and it uses multiple
-            lines
+            lines  
+  - path: /v1/search
+    methods:
+      - GET
+    conditions:
+      - type: QueryContains
+        with:
+          name: foo
+          values:
+            - bar
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+          body: >
+            Hello, World
+            This request contained a query param
