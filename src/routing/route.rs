@@ -38,6 +38,7 @@ impl Route {
                     Method::Patch => acc.patch(Self::handler),
                     Method::Delete => acc.delete(Self::handler),
                     Method::Head => acc.head(Self::handler),
+                    Method::Options => acc.options(Self::handler)
                 }
             })
     }
