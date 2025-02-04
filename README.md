@@ -24,6 +24,11 @@ Your friendly HTTP mock response server.
 ### Example
 
 ```yaml
+options:
+  host: localhost
+  port: 15001
+  min_response_delay_ms: 100
+  max_response_delay_ms: 3000
 routes:
   - path: /v1/login
     methods:
@@ -40,7 +45,7 @@ routes:
           headers:
             Content-Type: application/json
           body:
-            file: resp.json
+            include: resp.json
   - path: /v1/search/:type/:version
     methods:
       - POST
@@ -66,19 +71,35 @@ routes:
             Hello, World
             This is a body
             and it uses multiple
-            lines
+            lines  
+  - path: /v1/search
+    methods:
+      - GET
+    conditions:
+      - type: QueryContains
+        with:
+          name: foo
+          values:
+            - bar
+        response:
+          status: 200
+          headers:
+            Content-Type: application/json
+          body: >
+            Hello, World
+            This request contained a query param
 ```
 
 ### Config
 
-| Field  | Type            | Description                                    | Required |
-|--------|-----------------|------------------------------------------------|----------|
+| Field  | Type            | Description                                     | Required |
+| ------ | --------------- | ----------------------------------------------- | -------- |
 | routes | [Route](#Route) | The configuration of all rules `mocked` checks. | yes      |
 
 ### Route
 
 | Field      | Type                      | Description                                                                                                                                            | Required |
-|------------|---------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|----------|
+| ---------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------- |
 | path       | string                    | The path of the resource. This may include path parameters that can be checked using matchers. Path params start with a colon (:)                      | yes      |
 | methods    | list(string)              | A list of HTTP methods the route responds to.                                                                                                          | yes      |
 | conditions | [Conditions](#Conditions) | A single, or multiple conditions that are checked once a route is matched. The condition also contains a response that is returned in case of a match. | yes      |
@@ -86,7 +107,7 @@ routes:
 ### Conditions
 
 | Field    | Type                  | Description                                                                                                                       | Required |
-|----------|-----------------------|-----------------------------------------------------------------------------------------------------------------------------------|----------|
+| -------- | --------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------- |
 | type     | string                | The type of a single condition. This can be used if only one condition needs to be used.                                          | no       |
 | with     |                       | The attributes a condition check of type `type` requires. Only used here for single conditions.                                   | no       |
 | or       | [Or](#Or)             | Define a list of conditions combined with a logical `or` operator, meaning that at least one condition must be true to emit true. | no       |
@@ -99,14 +120,14 @@ true.
 ### Or
 
 | Field | Type   | Description                                                                                     | Required |
-|-------|--------|-------------------------------------------------------------------------------------------------|----------|
+| ----- | ------ | ----------------------------------------------------------------------------------------------- | -------- |
 | type  | string | The type of a single condition. This can be used if only one condition needs to be used.        | no       |
 | with  |        | The attributes a condition check of type `type` requires. Only used here for single conditions. | no       |
 
 ### And
 
 | Field | Type   | Description                                                                                     | Required |
-|-------|--------|-------------------------------------------------------------------------------------------------|----------|
+| ----- | ------ | ----------------------------------------------------------------------------------------------- | -------- |
 | type  | string | The type of a single condition. This can be used if only one condition needs to be used.        | no       |
 | with  |        | The attributes a condition check of type `type` requires. Only used here for single conditions. | no       |
 
@@ -115,21 +136,28 @@ true.
 #### PathParam
 
 | Field  | Type                         | Description                                               | Required |
-|--------|------------------------------|-----------------------------------------------------------|----------|
+| ------ | ---------------------------- | --------------------------------------------------------- | -------- |
 | name   | string                       | The name of the path parameter to match.                  | yes      |
 | values | list(string) or list(number) | The attribute values to match. Can be strings or numbers. | yes      |
 
 #### HeaderContains
 
-| Field  | Type         | Description                                     | Required |
-|--------|--------------|-------------------------------------------------|----------|
-| name   | string       | The name of the header to match.                | yes      |
-| values | list(string) | A list of string the header value must contain. | yes      |
+| Field  | Type         | Description                                                        | Required |
+| ------ | ------------ | ------------------------------------------------------------------ | -------- |
+| name   | string       | The name of the header to match                                    | yes      |
+| values | list(string) | A list of strings. If the header contains one of them, it matches. | yes      |
+
+#### QueryContains
+
+| Field  | Type         | Description                                                       | Required |
+| ------ | ------------ | ----------------------------------------------------------------- | -------- |
+| name   | string       | The name of the query param to match                              | yes      |
+| values | list(string) | A list of strings. If the query contains one of them, it matches. | yes      |
 
 ### Response
 
 | Field   | Type                | Description                              | Required |
-|---------|---------------------|------------------------------------------|----------|
+| ------- | ------------------- | ---------------------------------------- | -------- |
 | status  | number              | The HTTP status code to return.          | yes      |
 | headers | map(string, string) | A map of headers to add to the response. | no       |
 | body    | [Body](#Body)       | The body to add to the response.         | no       |
@@ -144,5 +172,5 @@ multiline string to a single line response string.
 #### Include Body
 
 | Field   | Type   | Description                                                                                                         | Required |
-|---------|--------|---------------------------------------------------------------------------------------------------------------------|----------|
-| include | string | A path to a file to include into the response. If it doesn't exist, the server return san InternalServerError (500) | yes      |
+| ------- | ------ | ------------------------------------------------------------------------------------------------------------------- | -------- |
+| include | string | A path to a file to include into the response. If it doesn't exist, the server returns an InternalServerError (500) | yes      |
