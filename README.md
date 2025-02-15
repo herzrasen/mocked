@@ -96,7 +96,7 @@ routes:
 
 | Field   | Type                | Description                                     | Required |
 | ------- | ------------------- | ----------------------------------------------- | -------- |
-| options | [Options](#Options) | Global configuratoon                            | no       |
+| options | [Options](#Options) | Global configuration                            | no       |
 | routes  | [Route](#Route)     | The configuration of all rules `mocked` checks. | yes      |
 
 ### Options
