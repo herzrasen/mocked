@@ -3,6 +3,7 @@ use std::path::PathBuf;
 use std::time::Duration;
 
 use axum::extract::Request;
+use axum::http::Method;
 use axum::middleware::Next;
 use axum::response::Response;
 use axum::{middleware, Extension};
@@ -33,15 +34,14 @@ async fn delay_response(
     req: Request,
     next: Next,
 ) -> Response {
-    let min = options.min_response_delay_ms.unwrap_or(0);
-    let max = options.max_response_delay_ms.unwrap_or(min);
-    let delay = rand::thread_rng().gen_range(min..=max);
-    log::info!("Sleeping for: {delay}ms");
-
-    tokio::time::sleep(Duration::from_millis(delay)).await;
-
-    let resp = next.run(req).await;
-    resp
+    if req.method() != Method::OPTIONS {
+        let min = options.min_response_delay_ms.unwrap_or(0);
+        let max = options.max_response_delay_ms.unwrap_or(min);
+        let delay = rand::thread_rng().gen_range(min..=max);
+        log::info!("Delaying response for: {delay}ms");
+        tokio::time::sleep(Duration::from_millis(delay)).await;
+    }
+    next.run(req).await
 }
 
 #[tokio::main]

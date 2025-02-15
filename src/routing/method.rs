@@ -11,3 +11,9 @@ pub enum Method {
     Head,
     Options,
 }
+
+impl ToString for Method {
+    fn to_string(&self) -> String {
+        format!("{:?}", self).to_uppercase()
+    }
+}

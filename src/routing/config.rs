@@ -14,15 +14,36 @@ pub struct Config {
 
 impl Config {
     pub fn router(&self) -> Router {
-        let router = self
+        let router =
+            self.inherit_enable_cors()
+                .routes
+                .iter()
+                .cloned()
+                .fold(Router::new(), |acc, next| {
+                    let route = Arc::new(next);
+                    acc.merge(route.router())
+                });
+        router
+    }
+
+    fn inherit_enable_cors(&self) -> Self {
+        let options = self.options.clone().unwrap_or_default();
+        let routes = self
             .routes
             .iter()
             .cloned()
-            .fold(Router::new(), |acc, next| {
-                let route = Arc::new(next);
-                acc.merge(route.router())
-            });
-        router
+            .map(|mut r| {
+                // only update it if it is not set in it's own config
+                if r.enable_cors.is_none() {
+                    r.enable_cors = options.enable_cors;
+                }
+                r.clone()
+            })
+            .collect();
+        Self {
+            options: self.options.clone(),
+            routes,
+        }
     }
 }
 
@@ -40,6 +61,7 @@ mod tests {
                     methods:
                       - POST
                       - PUT
+                    enable_cors: true
                     conditions:
                       - type: HeaderContains
                         with:

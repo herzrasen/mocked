@@ -1,10 +1,12 @@
 options:
   host: localhost
   port: 15001
+  enable_cors: true
   min_response_delay_ms: 100
   max_response_delay_ms: 3000
 routes:
   - path: /v1/login
+    enable_cors: false
     methods:
       - POST
       - PUT
@@ -23,6 +25,7 @@ routes:
   - path: /v1/search/:type/:version
     methods:
       - POST
+      - PUT
     conditions:
       - or:
           - type: PathParam
