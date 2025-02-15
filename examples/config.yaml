@@ -1,5 +1,5 @@
 options:
-  host: localhost
+  address: localhost
   port: 15001
   enable_cors: true
   min_response_delay_ms: 100
