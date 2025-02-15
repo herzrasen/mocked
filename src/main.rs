@@ -19,12 +19,12 @@ mod request;
 mod routing;
 
 #[derive(Parser, Debug)]
-#[command(name = "fauxd", about = "Serve mock data")]
+#[command(name = "mocked", about = "Serve mock data")]
 pub struct Cli {
     #[arg(long)]
     pub port: Option<u16>,
     #[arg(long)]
-    pub host: Option<String>,
+    pub address: Option<String>,
     #[arg(help = "The config file describing the routes")]
     pub config: PathBuf,
 }
@@ -57,12 +57,12 @@ async fn main() {
     let config: Config = serde_yaml::from_str(&config).unwrap();
 
     let mut options = config.options.clone().unwrap_or_default();
-    if args.host.is_some() {
-        log::info!("Setting host to: {:?}", args.host);
-        options.host = args.host;
+    if args.address.is_some() {
+        log::info!("Binding on address {:?}", args.address);
+        options.address = args.address;
     }
 
-    if options.host.is_none() {
+    if options.address.is_none() {
         eprintln!("'host' must either be set in the config or via the command line");
         std::process::exit(1);
     }
@@ -87,7 +87,7 @@ async fn main() {
 
     match tokio::net::TcpListener::bind(format!(
         "{}:{}",
-        options.clone().host.unwrap(),
+        options.clone().address.unwrap(),
         options.clone().port.unwrap()
     ))
     .await
@@ -95,7 +95,7 @@ async fn main() {
         Ok(listener) => {
             log::info!(
                 "Starting server on: {}:{}",
-                options.host.unwrap(),
+                options.address.unwrap(),
                 options.port.unwrap()
             );
 
@@ -106,7 +106,7 @@ async fn main() {
         Err(e) => {
             log::error!(
                 "Failed to bind to: {}:{} - {e}",
-                options.host.unwrap(),
+                options.address.unwrap(),
                 options.port.unwrap()
             );
             std::process::exit(1);
