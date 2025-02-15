@@ -7,7 +7,7 @@ Your friendly HTTP mock response server.
 `mocked` supports you when developing software. Here are a few reasons:
 
 * `mocked` allows you to include responses from external files, that might change during the development process. You
-  don't need to update your `mocked` config in this cases.
+  don't need to update your `mocked` config in these cases.
 * it allows developers to isolate the system under test from external dependencies. This is particularly useful when
   testing components that interact with external services. By using `mocked`, developers can simulate the behavior of the
   external service and ensure that the system under test behaves as expected.
@@ -25,12 +25,14 @@ Your friendly HTTP mock response server.
 
 ```yaml
 options:
-  host: localhost
+  address: localhost
   port: 15001
+  enable_cors: true
   min_response_delay_ms: 100
   max_response_delay_ms: 3000
 routes:
   - path: /v1/login
+    enable_cors: false
     methods:
       - POST
       - PUT
@@ -92,9 +94,20 @@ routes:
 
 ### Config
 
-| Field  | Type            | Description                                     | Required |
-| ------ | --------------- | ----------------------------------------------- | -------- |
-| routes | [Route](#Route) | The configuration of all rules `mocked` checks. | yes      |
+| Field   | Type                | Description                                     | Required |
+| ------- | ------------------- | ----------------------------------------------- | -------- |
+| options | [Options](#Options) | Global configuratoon                            | no       |
+| routes  | [Route](#Route)     | The configuration of all rules `mocked` checks. | yes      |
+
+### Options
+
+| Field                 | Type   | Description                                                                                                                                                                                                                  | Required                                |
+| --------------------- | ------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| address               | string | The address to bind to                                                                                                                                                                                                       | yes (when not provided via commandline) |
+| port                  | int    | The port to bind to                                                                                                                                                                                                          | yes (when not provided via commandline) |
+| enable_cors           | bool   | Globally enabled cors for the requests. This means that CORS headers will be set and preflight requests (OPTIONS) will be answered by default. This can be turned off on a route basis by setting enable_cors to false there | yes (when not provided via commandline) |
+| min_response_delay_ms | int    | The minimum delay that shound be waiting until a request responds                                                                                                                                                            | no                                      |
+| max_response_delay_ms | int    | The maximum delay that shound be waiting until a request responds                                                                                                                                                            | no                                      |
 
 ### Route
 
