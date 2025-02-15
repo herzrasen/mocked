@@ -48,7 +48,7 @@ routes:
             Content-Type: application/json
           body:
             include: resp.json
-  - path: /v1/search/:type/:version
+  - path: /v1/search/{type}/{version}
     methods:
       - POST
     conditions:
