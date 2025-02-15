@@ -37,7 +37,7 @@ async fn delay_response(
     if req.method() != Method::OPTIONS {
         let min = options.min_response_delay_ms.unwrap_or(0);
         let max = options.max_response_delay_ms.unwrap_or(min);
-        let delay = rand::thread_rng().gen_range(min..=max);
+        let delay = rand::rng().random_range(min..=max);
         log::info!("Delaying response for: {delay}ms");
         tokio::time::sleep(Duration::from_millis(delay)).await;
     }
