@@ -97,11 +97,11 @@ mod tests {
         Matchers::Or(vec![
             Matcher::PathParam(PathParamMatcher {
                 name: "a".to_string(),
-                values: vec![Value::Numeric(1.)],
+                values: vec![Value::Integer(1)],
             }),
             Matcher::PathParam(PathParamMatcher {
                 name: "b".to_string(),
-                values: vec![Value::Numeric(2.)],
+                values: vec![Value::Integer(2)],
             }),
         ])
     }
@@ -110,11 +110,11 @@ mod tests {
         Matchers::And(vec![
             Matcher::PathParam(PathParamMatcher {
                 name: "a".to_string(),
-                values: vec![Value::Numeric(1.)],
+                values: vec![Value::Integer(1)],
             }),
             Matcher::PathParam(PathParamMatcher {
                 name: "b".to_string(),
-                values: vec![Value::Numeric(2.)],
+                values: vec![Value::Integer(2)],
             }),
         ])
     }

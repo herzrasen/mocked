@@ -8,7 +8,7 @@ use crate::routing::route::Route;
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Config {
-    pub options: Option<Options>,
+    pub options: Options,
     pub routes: Vec<Route>,
 }
 
@@ -27,7 +27,7 @@ impl Config {
     }
 
     fn inherit_enable_cors(&self) -> Self {
-        let options = self.options.clone().unwrap_or_default();
+        let options = self.options.clone();
         let routes = self
             .routes
             .iter()
@@ -56,7 +56,11 @@ mod tests {
 
     #[tokio::test]
     async fn test_create_router() {
-        let config_str = r#"routes:
+        let config_str = r#"
+                options:
+                  address: localhost
+                  port: 3003
+                routes:
                   - path: /test
                     methods:
                       - POST

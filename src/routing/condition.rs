@@ -49,11 +49,11 @@ mod tests {
         let condition = Condition {
             matcher: Some(Matcher::PathParam(PathParamMatcher {
                 name: String::from("foo"),
-                values: vec![Value::Numeric(123.)],
+                values: vec![Value::Integer(123)],
             })),
             matchers: Some(Matchers::Or(vec![Matcher::PathParam(PathParamMatcher {
                 name: String::from("foo"),
-                values: vec![Value::Numeric(234.)],
+                values: vec![Value::Integer(234)],
             })])),
             response: Response {
                 status: 200,
@@ -83,7 +83,7 @@ mod tests {
             matcher: None,
             matchers: Some(Matchers::Or(vec![Matcher::PathParam(PathParamMatcher {
                 name: String::from("foo"),
-                values: vec![Value::Numeric(234.)],
+                values: vec![Value::Integer(234)],
             })])),
             response: Response {
                 status: 200,
