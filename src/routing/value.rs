@@ -4,14 +4,18 @@ use serde::{Deserialize, Serialize};
 #[serde(untagged)]
 pub enum Value {
     String(String),
+    Integer(i64),
     Numeric(f64),
 }
 
 impl From<String> for Value {
     fn from(value: String) -> Self {
-        match value.parse::<f64>() {
-            Ok(v) => Self::Numeric(v),
-            Err(_) => Self::String(value),
+        if let Ok(v) = value.parse::<i64>() {
+            Self::Integer(v)
+        } else if let Ok(v) = value.parse::<f64>() {
+            Self::Numeric(v)
+        } else {
+            Self::String(value)
         }
     }
 }
@@ -21,9 +25,16 @@ mod tests {
     use crate::routing::value::Value;
 
     #[test]
+    fn test_from_string_with_integer() {
+        let v: Value = String::from("42").into();
+        assert_eq!(v, Value::Integer(42));
+    }
+
+
+    #[test]
     fn test_from_string_with_numeric() {
-        let v: Value = String::from("10").into();
-        assert_eq!(v, Value::Numeric(10.));
+        let v: Value = String::from("10.5").into();
+        assert_eq!(v, Value::Numeric(10.5));
     }
 
     #[test]
