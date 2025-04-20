@@ -40,6 +40,10 @@ routes:
               values:
                 - 1
                 - 2
+          - type: BodyContains
+            with:
+              values: 
+                - hello
         response:
           status: 200
           headers:

@@ -2,12 +2,15 @@ use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::vec;
 
+use axum::http::StatusCode;
 use tokio::fs::File;
 use tokio::io::AsyncWriteExt;
 
 use crate::routing::body::{Body, Include};
 use crate::routing::condition::Condition;
-use crate::routing::matcher::{HeaderContainsMatcher, Matcher, PathParamMatcher};
+use crate::routing::matcher::{
+    BodyContainsMatcher, HeaderContainsMatcher, Matcher, PathParamMatcher,
+};
 use crate::routing::matchers::Matchers;
 use crate::routing::method::Method;
 use crate::routing::response::Response;
@@ -71,11 +74,27 @@ fn create_example_routes(_config_dir: PathBuf) -> Vec<Route> {
                 matcher: None,
                 matchers: None,
                 response: Response {
-                    status: 200,
+                    status: StatusCode::OK.into(),
                     headers: headers.clone(),
                     body: Some(Body::Include(Include {
                         include: "hello.json".into(),
                     })),
+                },
+            }],
+        },
+        Route {
+            path: String::from("/hello/{name}"),
+            methods: vec![Method::Post],
+            enable_cors: None,
+            conditions: vec![Condition {
+                matcher: Some(Matcher::BodyContains(BodyContainsMatcher {
+                    values: vec![String::from("hello")],
+                })),
+                matchers: None,
+                response: Response {
+                    status: StatusCode::OK.into(),
+                    headers: HashMap::new(),
+                    body: Some(Body::String(String::from("Hello world"))),
                 },
             }],
         },
@@ -95,7 +114,7 @@ fn create_example_routes(_config_dir: PathBuf) -> Vec<Route> {
                 ])),
                 matcher: None,
                 response: Response {
-                    status: 200,
+                    status: StatusCode::OK.into(),
                     headers,
                     body: None,
                 },
@@ -113,7 +132,7 @@ fn create_example_routes(_config_dir: PathBuf) -> Vec<Route> {
                 })),
                 matchers: None,
                 response: Response {
-                    status: 202,
+                    status: StatusCode::ACCEPTED.into(),
                     headers: HashMap::new(),
                     body: Some(Body::String(String::from("Accepted"))),
                 },
