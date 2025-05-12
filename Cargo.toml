@@ -10,7 +10,7 @@ readme = "README.md"
 [dependencies]
 axum = "0.8.1"
 axum-test = "17.2.0"
-clap = { version = "4.5.31", features = ["derive"] }
+clap = { version = "4.5.38", features = ["derive"] }
 env_logger = "0.11.6"
 log = "0.4.26"
 serde = { version = "1.0.219", features = ["derive"] }
