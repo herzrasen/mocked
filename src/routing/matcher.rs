@@ -9,7 +9,8 @@ use crate::routing::value::Value;
 pub enum Matcher {
     PathParam(PathParamMatcher),
     HeaderContains(HeaderContainsMatcher),
-    QueryContains(QueryContainsMatcher)
+    QueryContains(QueryContainsMatcher),
+    BodyContains(BodyContainsMatcher)
 }
 
 impl Matcher {
@@ -18,6 +19,7 @@ impl Matcher {
             Matcher::PathParam(matcher) => matcher.matches(req),
             Matcher::HeaderContains(matcher) => matcher.matches(req),
             Matcher::QueryContains(matcher) => matcher.matches(req),
+            Matcher::BodyContains(matcher) => matcher.matches(req),
         }
     }
 }
@@ -84,6 +86,17 @@ impl Matching for QueryContainsMatcher {
     }
 }
 
+#[derive(Serialize, Deserialize, Clone, Debug)]
+pub struct BodyContainsMatcher {
+    pub values: Vec<String>
+}
+
+impl Matching for BodyContainsMatcher {
+    fn matches(&self, req: &Request) -> bool {
+        self.values.iter().any(|v| req.body.contains(v))
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
@@ -95,8 +108,40 @@ mod tests {
     use crate::routing::matcher::Matcher::QueryContains;
     use crate::routing::matcher::PathParamMatcher;
     use crate::routing::value::Value;
+    use crate::routing::Matching;
 
+    use super::BodyContainsMatcher;
     use super::QueryContainsMatcher;
+
+    #[test]
+    fn test_body_contains_matches() {
+        let bcm = BodyContainsMatcher {
+            values: vec![String::from("foo"), String::from("bar")]
+        };
+        let req = Request {
+            body: String::from("This is a foo body"),
+            headers: HeaderMap::new(),
+            path_params: HashMap::new(),
+            query: HashMap::new(),
+        };
+        let matches = bcm.matches(&req);
+        assert!(matches)
+    }
+
+    #[test]
+    fn test_body_contains_matches_is_false() {
+        let bcm = BodyContainsMatcher {
+            values: vec![String::from("foo"), String::from("bar")]
+        };
+        let req = Request {
+            body: String::from("This is a body"),
+            headers: HeaderMap::new(),
+            path_params: HashMap::new(),
+            query: HashMap::new(),
+        };
+        let matches = bcm.matches(&req);
+        assert!(!matches)
+    }
 
     #[test]
     fn test_path_param_matches() {

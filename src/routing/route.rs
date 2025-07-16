@@ -20,6 +20,7 @@ use crate::routing::method::Method;
 pub struct Route {
     pub path: String,
     pub methods: Vec<Method>,
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub enable_cors: Option<bool>,
     pub conditions: Vec<Condition>,
 }
