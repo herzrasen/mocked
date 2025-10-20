@@ -9,7 +9,7 @@ readme = "README.md"
 
 [dependencies]
 axum = "0.8.4"
-axum-test = "17.3.0"
+axum-test = "18.1.0"
 clap = { version = "4.5.41", features = ["derive"] }
 env_logger = "0.11.8"
 log = "0.4.27"
